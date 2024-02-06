@@ -2,7 +2,7 @@
 FROM postgres:latest
 
 # Copy SQL script and CSV file to Docker container
-# COPY initialSlots.sql /docker-entrypoint-initdb.d/
+COPY initialSlots.sql /docker-entrypoint-initdb.d/
 
 # Expose PostgreSQL port
-EXPOSE 5432
+# EXPOSE 5432
