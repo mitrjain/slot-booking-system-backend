@@ -1,0 +1,6 @@
+.env
+node_modules/
+package.json
+
+env-sbs-db
+env-sbs-api-server
