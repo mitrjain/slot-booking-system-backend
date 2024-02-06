@@ -19,7 +19,9 @@ services:
       - 4000:4000
 
   sbs-frontend:
-    image: mitrjain1996/sbs-frontend:v1.0
+    build:
+      context: ../../student-booking-system
+      dockerfile: ./Dockerfile
     depends_on:
       - sbs-api-server
     env_file: ./env-sbs-frontend
