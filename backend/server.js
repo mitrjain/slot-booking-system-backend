@@ -7,7 +7,8 @@ require('dotenv').config();
 
 const {sendEmailToTutor, sendEmailToStudent, connectToGmail } = require('./send-email-utils')
 const { connectToSpreadSheet, addAppointment } = require('./sheet-utils')
-const { connectToDB } = require('./db')
+const { connectToDB } = require('./db');
+const { getAppointmentDate } = require('./utils');
 // const {routes, initiliazeRouter} = require('./routes');
 
 
@@ -153,9 +154,11 @@ app.post('/api/book', async (req, res) => {
     // Update the slot with the selected tutor and mark it as booked
     await slot.update({ [selectedTutor]: true });
 
-    addAppointment(sheet,'Mit', studentDetails, slot);
+    const appointmentDate =  getAppointmentDate(slot.day)
+
+    addAppointment(sheet,'Mit', studentDetails, slot, appointmentDate);
     sendEmailToTutor(OAUTH_EMAIL, transporter ,studentDetails, slot);
-    sendEmailToStudent(OAUTH_EMAIL, transporter, studentDetails, slot)
+    sendEmailToStudent(OAUTH_EMAIL, transporter, studentDetails, slot, appointmentDate)
 
     
 

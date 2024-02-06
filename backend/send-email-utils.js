@@ -44,13 +44,13 @@ const sendEmailToTutor = async (verifiedSenderEmail ,transporter ,studentDetails
 };
 
 
-const sendEmailToStudent = async (verifiedSenderEmail, transporter ,studentDetails,  slotDetails) => {
+const sendEmailToStudent = async (verifiedSenderEmail, transporter ,studentDetails,  slotDetails, appointmentDate) => {
 
     const mailOptions = {
       from: verifiedSenderEmail,
       to: studentDetails.studentEmail,
-      subject: 'Slot Booking Confirmation',
-      text: `Hello ${studentDetails.studentName} ,\n\nYou have been booked for a slot.\n\nSlot Details:\nStart Time: ${slotDetails.start_time}\nEnd Time: ${slotDetails.end_time}`,
+      subject: 'CSSL Slot Booking Confirmation',
+      text: `Hello ${studentDetails.studentName} ,\n\nYou have a tutoring slot booked.\n\nSlot Details:\nDate: ${appointmentDate}\nDay: ${slotDetails.day}\nStart Time: ${slotDetails.start_time}\nEnd Time: ${slotDetails.end_time}`,
   };
   
   // send mail
