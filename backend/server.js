@@ -64,7 +64,8 @@ connectToSpreadSheet(SHEET_ID, oauth2Client).then(value => {
 */
 var sequelize
 var Slot
-[sequelize, Slot] = connectToDB()
+var Appointments
+[sequelize, Slot, Appointments] = connectToDB()
 
 app.use(bodyParser.json());
 
@@ -140,6 +141,12 @@ app.post('/api/book', async (req, res) => {
       return res.status(404).json({ message: 'Slot not found' });
     }
 
+    //Check to see if the student is not booking the same slot
+    const exisitingAppointment = await Appointments.findOne({ where: { slotId: id, student_email: studentDetails.studentEmail } });
+    if(exisitingAppointment != null){
+      return res.json({ message: 'Slot booking already exists!' });
+    }
+
     // Check which tutor is available
     let selectedTutor = null;
 
@@ -153,6 +160,7 @@ app.post('/api/book', async (req, res) => {
 
     // Update the slot with the selected tutor and mark it as booked
     await slot.update({ [selectedTutor]: true });
+    await Appointments.create({ slotId: id, student_email: studentDetails.studentEmail});
 
     const appointmentDate =  getAppointmentDate(slot.day)
 

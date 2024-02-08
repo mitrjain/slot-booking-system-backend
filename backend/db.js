@@ -34,7 +34,25 @@ const connectToDB = () => {
     },
     });
 
-    return [sequelize, Slot]
+
+
+    const Appointments = sequelize.define('Appointments', {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
+        slotId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,    
+        },
+        student_email: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        }
+    });
+
+    return [sequelize, Slot, Appointments]
 } 
 
 
