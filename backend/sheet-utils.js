@@ -19,7 +19,7 @@ const addAppointment = async (doc, selectedTutor, studentDetails, slotDetails, a
     const courseCS131 =  studentDetails.courseNumber.includes("CS131") ? 'Yes' : ''
     const courseCS146 =  studentDetails.courseNumber.includes("CS146") ? 'Yes' : ''
     const courseCS151 =  studentDetails.courseNumber.includes("CS151") ? 'Yes' : ''
-    const otherCourseWork =  'otherCourseDetails' in studentDetails ? studentDetails.studentDetails : ''
+    const otherCourseWork =  'otherCourseDetails' in studentDetails ? studentDetails.otherCourseDetails : ''
 
 
     const row = {
