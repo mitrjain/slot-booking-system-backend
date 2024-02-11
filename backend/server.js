@@ -74,6 +74,18 @@ app.use(bodyParser.json());
 **API defintions
 */
 
+//API to get dates
+app.get('/api/dates', async (req, res) => {
+  const obj = {
+    'M': getAppointmentDate('M'),
+    'T': getAppointmentDate('T'),
+    'Th':getAppointmentDate('Th')
+  }
+  res.json(obj)
+});
+
+
+
 // API to get available slots
 app.get('/api/slots', async (req, res) => {
   // console.log(process.env.GMAIL_REFRESH_TOKEN)
@@ -189,6 +201,8 @@ app.post('/api/create', async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
+
 
 // Sync the Sequelize model with the database
 sequelize.sync().then(() => {
