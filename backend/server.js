@@ -65,7 +65,8 @@ connectToSpreadSheet(SHEET_ID, oauth2Client).then(value => {
 var sequelize
 var Slot
 var Appointments
-[sequelize, Slot, Appointments] = connectToDB()
+var Tutors
+[sequelize, Slot, Appointments, Tutors] = connectToDB()
 
 app.use(bodyParser.json());
 
@@ -83,7 +84,6 @@ app.get('/api/dates', async (req, res) => {
   }
   res.json(obj)
 });
-
 
 
 // API to get available slots
@@ -161,11 +161,25 @@ app.post('/api/book', async (req, res) => {
 
     // Check which tutor is available
     let selectedTutor = null;
+    let selectedTutorDetails = null;
 
-    if (!slot.tutor1) {
-      selectedTutor = 'tutor1';
+
+    if (!slot.tutor1 && !slot.tutor2) {
+      //randomly select a tuotr
+      if(Math.random()>= 0.5){
+        selectedTutor = 'tutor1';  
+        selectedTutorDetails = await Tutors.findByPk(slot.tutor1_id);
+      }
+      else{
+        selectedTutor = 'tutor2';  
+        selectedTutorDetails = await Tutors.findByPk(slot.tutor2_id);
+      }
+    } else if (!slot.tutor1) {
+      selectedTutor = 'tutor2';
+      selectedTutorDetails = await Tutors.findByPk(slot.tutor1_id);
     } else if (!slot.tutor2) {
       selectedTutor = 'tutor2';
+      selectedTutorDetails = await Tutors.findByPk(slot.tutor2_id);
     } else {
       return res.status(400).json({ message: 'Both tutors are already booked for this slot' });
     }
@@ -176,11 +190,9 @@ app.post('/api/book', async (req, res) => {
 
     const appointmentDate =  getAppointmentDate(slot.day)
 
-    addAppointment(sheet,'Mit', studentDetails, slot, appointmentDate);
-    sendEmailToTutor(OAUTH_EMAIL, transporter ,studentDetails, slot);
+    addAppointment(sheet, selectedTutorDetails.name , studentDetails, slot, appointmentDate);
+    sendEmailToTutor(OAUTH_EMAIL, transporter ,selectedTutorDetails, slot, appointmentDate);
     sendEmailToStudent(OAUTH_EMAIL, transporter, studentDetails, slot, appointmentDate)
-
-    
 
     res.json({ message: 'Slot booked successfully!', tutor: selectedTutor });
   } catch (error) {
@@ -202,7 +214,18 @@ app.post('/api/create', async (req, res) => {
   }
 });
 
-
+// API to create a slot
+app.post('/api/tutors/aidd', async (req, res) => {
+  const { name, email} = req.body;
+  try {
+    const newTutor = await Tutors.create({ name: name, email: email});
+    console.log(" auto-generated ID:", newTutor.id);
+    res.json({ message: 'Tutor added successfully!' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
 
 // Sync the Sequelize model with the database
 sequelize.sync().then(() => {

@@ -5,8 +5,8 @@ services:
       context: ../database
       dockerfile: ./Dockerfile
     env_file: ./env-sbs-db
-    # ports:
-    #   - 5432:5432
+    ports:
+      - 5432:5432
   
   sbs-api-server:
     build:

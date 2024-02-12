@@ -26,13 +26,13 @@ const connectToGmail = async (oauth2Client, OAUTH_EMAIL, GMAIL_CLIENT_ID, GMAIL_
 }
 
 
-const sendEmailToTutor = async (verifiedSenderEmail ,transporter ,studentDetails,  slotDetails) => {
+const sendEmailToTutor = async (verifiedSenderEmail ,transporter ,selectedTutorDetails ,slotDetails, appointmentDate ) => {
 
     const mailOptions = {
       from: verifiedSenderEmail,
       to: 'mitrjain@gmail.com',
-      subject: 'Slot Booking Confirmation',
-      text: `Hello ${studentDetails.studentName} ,\n\nYou have been booked for a slot.\n\nSlot Details:\nStart Time: ${slotDetails.start_time}\nEnd Time: ${slotDetails.end_time}`,
+      subject: 'CSSL Slot Booking Confirmation [Tutor]',
+      text: `Hello ${selectedTutorDetails.name} ,\n\nYou have been booked for a CSSL tutoring slot.\n\nSlot Details:\nDate: ${appointmentDate}\nDay: ${slotDetails.day}\nStart Time: ${slotDetails.start_time}\nEnd Time: ${slotDetails.end_time}`,
     };
   
     transporter.sendMail(mailOptions, (error, info) => {
@@ -49,8 +49,8 @@ const sendEmailToStudent = async (verifiedSenderEmail, transporter ,studentDetai
     const mailOptions = {
       from: verifiedSenderEmail,
       to: studentDetails.studentEmail,
-      subject: 'CSSL Slot Booking Confirmation',
-      text: `Hello ${studentDetails.studentName} ,\n\nYou have a tutoring slot booked.\n\nSlot Details:\nDate: ${appointmentDate}\nDay: ${slotDetails.day}\nStart Time: ${slotDetails.start_time}\nEnd Time: ${slotDetails.end_time}`,
+      subject: 'CSSL Slot Booking Confirmation [Student]',
+      text: `Hello ${studentDetails.studentName} ,\n\nYou have a CSSL tutoring slot booked.\n\nSlot Details:\nDate: ${appointmentDate}\nDay: ${slotDetails.day}\nStart Time: ${slotDetails.start_time}\nEnd Time: ${slotDetails.end_time}`,
   };
   
   // send mail

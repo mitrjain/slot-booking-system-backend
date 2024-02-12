@@ -32,7 +32,9 @@ CREATE TABLE IF NOT EXISTS public."Slots" (
     day character varying(255) NOT NULL,
     start_time time without time zone NOT NULL,
     end_time time without time zone NOT NULL,
+    tutor1_id integer
     tutor1 boolean DEFAULT false,
+    tutor2_id integer,
     tutor2 boolean DEFAULT false,
     "createdAt" timestamp with time zone NOT NULL,
     "updatedAt" timestamp with time zone NOT NULL
