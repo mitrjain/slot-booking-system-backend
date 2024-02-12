@@ -28,11 +28,11 @@ services:
     ports:
       - 8080:3000
   
-  # nginx-router:
-  #   ports:
-  #     - 8081:8081
-  #   build:
-  #     context: ../nginx
-  #     dockerfile: ./Dockerfile
-  #   depends_on:
-  #     - students-api-server
+  nginx-router:
+    ports:
+      - 443:443
+    build:
+      context: ../nginx
+      dockerfile: ./Dockerfile
+    depends_on:
+      - sbs-frontend
