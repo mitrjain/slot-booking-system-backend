@@ -13,7 +13,7 @@ const connectToSpreadSheet = async (sheetId, oauth2Client)=>{
 
 
 const addAppointment = async (doc, selectedTutor, studentDetails, slotDetails, appointmentDate) => {
-    const timestamp = moment().format("MM/DD/YYYY hh:mm:ss")
+    const timestamp = moment().tz("America/Los_Angeles").format("MM/DD/YYYY hh:mm:ss")
     const courseCS46A =  studentDetails.courseNumber.includes("CS46A") ? 'Yes' : ''
     const courseCS46B =  studentDetails.courseNumber.includes("CS46B") ? 'Yes' : ''
     const courseCS131 =  studentDetails.courseNumber.includes("CS131") ? 'Yes' : ''

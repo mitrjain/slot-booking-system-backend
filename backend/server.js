@@ -4,11 +4,13 @@ const cors = require('cors');
 const { google } = require('googleapis')
 const { Sequelize, DataTypes, Op } = require('sequelize');
 require('dotenv').config();
+var moment = require('moment-timezone');
+moment().tz("America/Los_Angeles").format();
 
 const {sendEmailToTutor, sendEmailToStudent, connectToGmail } = require('./send-email-utils')
 const { connectToSpreadSheet, addAppointment } = require('./sheet-utils')
 const { connectToDB } = require('./db');
-const { getAppointmentDate } = require('./utils');
+const { getAppointmentDate, days } = require('./utils');
 // const {routes, initiliazeRouter} = require('./routes');
 
 
@@ -94,7 +96,8 @@ app.get('/api/slots', async (req, res) => {
 
     const validDays = ['M', 'T', 'Th'];
     let availableSlots
-    const currentTime = new Date().toTimeString().split(' ')[0];
+    const currentTime = moment().tz("America/Los_Angeles").format('HH:mm:ss');
+    // moment().format('hh:mm:ss');
     if (!day || !validDays.includes(day)) {
       availableSlots = await Slot.findAll({ 
         where: { 
@@ -102,9 +105,9 @@ app.get('/api/slots', async (req, res) => {
           { tutor1: false },
           { tutor2: false }
         ],
-        // end_time: {
-        //   [Sequelize.Op.gt]: currentTime,
-        // }  
+        start_time: {
+          [Sequelize.Op.gt]: currentTime,
+        }  
       },
       order: [
         ['start_time', 'ASC']
@@ -115,21 +118,51 @@ app.get('/api/slots', async (req, res) => {
       return res.status(400).json({ message: 'Invalid or missing day parameter' });
     }
     else{
-      availableSlots = await Slot.findAll({ 
-        where: { 
-          day : day,
-          [Op.or]: [
-          { tutor1: false },
-          { tutor2: false }
+
+      const presentDay = moment().tz("America/Los_Angeles").day();
+      const queriedDay = days.get(day)
+
+      // console.log("presentDay:"+presentDay)
+      // console.log("queriedDay:"+queriedDay)
+
+      let moment1 = moment(currentTime,'HH:mm::ss')
+      let moment2 = moment('17:01:00','HH:mm::ss')
+
+      // console.log(moment1)
+      // console.log(moment2)
+      if(presentDay == queriedDay && moment1.isBefore(moment2) ){
+        availableSlots = await Slot.findAll({ 
+          where: { 
+            day : day,
+            [Op.or]: [
+            { tutor1: false },
+            { tutor2: false }
+          ],
+          start_time: {
+            [Sequelize.Op.gt]: currentTime,
+          }  
+        },
+        order: [
+          ['start_time', 'ASC']
         ],
-        // end_time: {
-        //   [Sequelize.Op.gt]: currentTime,
-        // }  
-      },
-      order: [
-        ['start_time', 'ASC']
-      ],
-      attributes: ['id', 'day', 'start_time', 'end_time'], });
+        attributes: ['id', 'day', 'start_time', 'end_time'], });
+      }
+      else{
+        availableSlots = await Slot.findAll({ 
+          where: { 
+            day : day,
+            [Op.or]: [
+            { tutor1: false },
+            { tutor2: false }
+          ]
+        },
+        order: [
+          ['start_time', 'ASC']
+        ],
+        attributes: ['id', 'day', 'start_time', 'end_time'], });
+
+      }
+      
 
     }    
     res.json(availableSlots);
