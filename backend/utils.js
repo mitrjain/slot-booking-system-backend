@@ -13,8 +13,8 @@ days.set('Sat',6);
 const getAppointmentDate = (appointmentDay) => {
     const currentDay = new Date().getDay();
     const appointmentDayIdx = days.get(appointmentDay)
-    console.log(currentDay)
-    console.log(appointmentDayIdx)
+    // console.log(currentDay)
+    // console.log(appointmentDayIdx)
     var daysToAdd =0
 
     if(currentDay > appointmentDayIdx){
