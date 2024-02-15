@@ -10,18 +10,8 @@ days.set('Th',4);
 days.set('F',5);
 days.set('Sat',6);
 
-
-// const reverseDays = new Map();
-// reverseDays.set(0,'Su');
-// reverseDays.set(1,'M');
-// reverseDays.set(2,'T');
-// reverseDays.set(3,'W');
-// reverseDays.set(4,'Th');
-// reverseDays.set(5,'F');
-// reverseDays.set(6,'S');
-
 const getAppointmentDate = (appointmentDay) => {
-    const currentDay = new Date().getDay();
+    const currentDay = moment().tz("America/Los_Angeles").day()
     const appointmentDayIdx = days.get(appointmentDay)
     // console.log(currentDay)
     // console.log(appointmentDayIdx)
@@ -32,6 +22,13 @@ const getAppointmentDate = (appointmentDay) => {
     }
     else if(appointmentDayIdx > currentDay){
         daysToAdd = appointmentDayIdx-currentDay;
+    }else{
+        const currentTime = moment().tz("America/Los_Angeles").format('HH:mm:ss');
+        let moment1 = moment(currentTime,'HH:mm::ss')
+        let moment2 = moment('17:01:00','HH:mm::ss')
+        if(moment1.isAfter(moment2)){
+            daysToAdd=7
+        }
     }
 
     const appointmentDate = moment().tz("America/Los_Angeles").add( daysToAdd,'days').format("MM/DD/YYYY");
