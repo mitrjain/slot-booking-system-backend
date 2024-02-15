@@ -1,5 +1,4 @@
 var moment = require('moment-timezone');
-moment().tz("America/Los_Angeles").format();
 
 const days = new Map();
 days.set('Su',0);
@@ -13,9 +12,7 @@ days.set('Sat',6);
 const getAppointmentDate = (appointmentDay) => {
     const currentDay = moment().tz("America/Los_Angeles").day()
     const appointmentDayIdx = days.get(appointmentDay)
-    // console.log(currentDay)
-    // console.log(appointmentDayIdx)
-    var daysToAdd =0
+    var daysToAdd = 0
 
     if(currentDay > appointmentDayIdx){
         daysToAdd = appointmentDayIdx-currentDay+7;
@@ -27,7 +24,7 @@ const getAppointmentDate = (appointmentDay) => {
         let moment1 = moment(currentTime,'HH:mm::ss')
         let moment2 = moment('17:01:00','HH:mm::ss')
         if(moment1.isAfter(moment2)){
-            daysToAdd=7
+            daysToAdd = 7
         }
     }
 

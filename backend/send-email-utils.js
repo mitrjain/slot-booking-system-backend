@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+require('dotenv').config();
 
 
 const connectToGmail = async (oauth2Client, OAUTH_EMAIL, GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET, GMAIL_REFRESH_TOKEN)=>{
@@ -28,9 +29,14 @@ const connectToGmail = async (oauth2Client, OAUTH_EMAIL, GMAIL_CLIENT_ID, GMAIL_
 
 const sendEmailToTutor = async (verifiedSenderEmail ,transporter ,selectedTutorDetails ,slotDetails, appointmentDate ) => {
 
+    let tutorEmail = 'mitrjain@gmail.com';
+    if (process.env.ENVIRONMENT == 'production'){
+        tutorEmail = selectedTutorDetails.email;
+    }
+
     const mailOptions = {
       from: verifiedSenderEmail,
-      to: 'mitrjain@gmail.com',
+      to: tutorEmail,
       subject: 'CSSL Slot Booking Confirmation [Tutor]',
       text: `Hello ${selectedTutorDetails.name} ,\n\nYou have been booked for a CSSL tutoring slot.\n\nSlot Details:\nDate: ${appointmentDate}\nDay: ${slotDetails.day}\nStart Time: ${slotDetails.start_time}\nEnd Time: ${slotDetails.end_time}`,
     };
