@@ -47,19 +47,24 @@ oauth2Client.setCredentials({
 */
 var accessToken =''
 var transporter
-connectToGmail(oauth2Client, OAUTH_EMAIL, GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET, GMAIL_REFRESH_TOKEN).then((value)=>{
-  transporter=value.transporter
-  accessToken=value.accessToken
-  // console.log(accessToken)
-})
+const setupMailConfig = (data) => {
+  accessToken = data.accessToken
+  transporter = data.transporter
+}
+
+
+
+connectToGmail(oauth2Client, OAUTH_EMAIL, GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET, GMAIL_REFRESH_TOKEN)
+  .then(setupMailConfig)
 
 /*
 **Connect to Sheets
 */
 var sheet
-connectToSpreadSheet(SHEET_ID, oauth2Client).then(value => {
-  sheet = value.doc
-})
+connectToSpreadSheet(SHEET_ID, oauth2Client)
+  .then(value => {
+    sheet = value.doc
+  })
 
 /*
 **Connect to DB

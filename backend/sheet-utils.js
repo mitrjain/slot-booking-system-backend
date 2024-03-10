@@ -2,13 +2,21 @@ const { GoogleSpreadsheet } = require('google-spreadsheet');
 
 var moment = require('moment'); // require
 
-const connectToSpreadSheet = async (sheetId, oauth2Client)=>{
+const connectToSpreadSheet = (sheetId, oauth2Client)=>{
     //set up shreadsheet client
     doc = new GoogleSpreadsheet(sheetId, oauth2Client);
-    await doc.loadInfo();
-    console.log("Connected to spreadsheet: "+doc.title);
-    doc = doc.sheetsByIndex[0];
-    return {doc}
+    return new Promise ((resolve, reject) => {
+        doc.loadInfo()
+            .then(()=>{
+                console.log("Connected to spreadsheet: "+doc.title);
+                doc = doc.sheetsByIndex[0];
+                resolve(doc)
+            })
+    })
+    //  doc.loadInfo();
+    // console.log("Connected to spreadsheet: "+doc.title);
+    // doc = doc.sheetsByIndex[0];
+    // return {doc}
 }
 
 

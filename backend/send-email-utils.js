@@ -2,28 +2,30 @@ const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 
-const connectToGmail = async (oauth2Client, OAUTH_EMAIL, GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET, GMAIL_REFRESH_TOKEN)=>{
+const connectToGmail = (oauth2Client, OAUTH_EMAIL, GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET, GMAIL_REFRESH_TOKEN)=>{
     var transporter
     var accessToken
-    await oauth2Client.getAccessToken().then((value) => {
-
-        // console.log("Access token: "+ value.token)
-        
-        //set up mailer client
-        transporter = nodemailer.createTransport({
-          service: 'gmail',
-          auth: {
-              type: 'OAuth2',
-              user: OAUTH_EMAIL,
-              clientId: GMAIL_CLIENT_ID,
-              clientSecret: GMAIL_CLIENT_SECRET,
-              refreshToken: GMAIL_REFRESH_TOKEN,
-              accessToken: value.token
-          }
-        });
-        accessToken = value.token
-      });
-    return {transporter, accessToken}
+    return new Promise ( (resolve, reject) => {
+        oauth2Client.getAccessToken()
+            .then((value) => {
+                let transporter
+                let accessToken = ''
+                //set up mailer client
+                transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        type: 'OAuth2',
+                        user: OAUTH_EMAIL,
+                        clientId: GMAIL_CLIENT_ID,
+                        clientSecret: GMAIL_CLIENT_SECRET,
+                        refreshToken: GMAIL_REFRESH_TOKEN,
+                        accessToken: value.token
+                    }
+                });
+                accessToken = value.token
+                resolve({accessToken:accessToken,transporter:transporter})
+            })
+        })
 }
 
 
