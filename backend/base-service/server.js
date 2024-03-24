@@ -1,3 +1,6 @@
+import axios from 'axios';
+import { addAppointment } from '../update-gsheets-service/sheet-utils';
+import { NOT } from 'sequelize/types/deferrable';
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -10,6 +13,8 @@ const { getAppointmentDate, days } = require('./utils');
 // const {routes, initiliazeRouter} = require('./routes');
 
 const port = 8080;
+const NOTIFICATION_SERVICE_HOST = process.env.NOTIFICATION_SERVICE_HOST
+const UPDATE_SHEETS_SERVICE_HOST = process.env.UPDATE_SHEETS_SERVICE_HOST
 
 const app = express();
 app.use(cors());
@@ -172,10 +177,51 @@ app.post('/api/book', async (req, res) => {
 
     const appointmentDate =  getAppointmentDate(slot.day)
 
-    //convert these three to API Calls to the microservice
-    addAppointment(sheet, selectedTutorDetails.name , studentDetails, slot, appointmentDate);
-    sendEmailToTutor(OAUTH_EMAIL, transporter ,selectedTutorDetails, slot, appointmentDate);
-    sendEmailToStudent(OAUTH_EMAIL, transporter, studentDetails, slot, appointmentDate)
+    const addAppointmentData = {
+      selectedTutorDetails: selectedTutorDetails,
+      studentDetails: studentDetails,
+      slot: slot,
+      appointmentDate: appointmentDate
+    }
+    axios.post(`${UPDATE_SHEETS_SERVICE_HOST}/api/record`,
+    addAppointmentData,
+    {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json;charset=UTF-8",
+      }
+    })
+    // addAppointment(sheet, selectedTutorDetails.name , studentDetails, slot, appointmentDate);
+
+    const sendEmailToTutorData = {
+      selectedTutorDetails: selectedTutorDetails,
+      slot: slot,
+      appointmentDate: appointmentDate
+    }
+    axios.post(`${NOTIFICATION_SERVICE_HOST}/api/tutor`,
+    sendEmailToTutorData,
+    {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json;charset=UTF-8",
+      }
+    })
+    // sendEmailToTutor(OAUTH_EMAIL, transporter ,selectedTutorDetails, slot, appointmentDate);
+
+    const sendEmailToStudentData = {
+      studentDetails: studentDetails,
+      slot: slot,
+      appointmentDate: appointmentDate
+    }
+    axios.post(`${NOTIFICATION_SERVICE_HOST}/api/student`,
+    sendEmailToStudentData,
+    {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json;charset=UTF-8",
+      }
+    })
+    // sendEmailToStudent(OAUTH_EMAIL, transporter, studentDetails, slot, appointmentDate)
 
     res.json({ message: 'Slot booked successfully!', tutor: selectedTutor });
   } catch (error) {
