@@ -1,6 +1,4 @@
-import axios from 'axios';
-import { addAppointment } from '../update-gsheets-service/sheet-utils';
-import { NOT } from 'sequelize/types/deferrable';
+const axios = require('axios');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');

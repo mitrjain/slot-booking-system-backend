@@ -12,7 +12,7 @@ COPY package-lock.json ./
 RUN npm ci
 
 # Copy the rest of the application code to the working directory
-COPY . .
+COPY *.js .
 
 # Expose the port that the app will run on
 EXPOSE 4000
