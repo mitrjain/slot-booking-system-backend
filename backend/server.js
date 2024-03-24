@@ -7,7 +7,6 @@ require('dotenv').config();
 var moment = require('moment-timezone');
 moment().tz("America/Los_Angeles").format();
 
-const {sendEmailToTutor, sendEmailToStudent, connectToGmail } = require('./send-email-utils')
 const { connectToSpreadSheet, addAppointment } = require('./sheet-utils')
 const { connectToDB } = require('./db');
 const { getAppointmentDate, days } = require('./utils');

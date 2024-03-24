@@ -2,9 +2,7 @@ const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 
-const connectToGmail = (oauth2Client, OAUTH_EMAIL, GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET, GMAIL_REFRESH_TOKEN)=>{
-    var transporter
-    var accessToken
+const connectToGmail = (oauth2Client, OAUTH_EMAIL, GOOGLE_CLIENT_ID, GOOGLEL_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN)=>{
     return new Promise ( (resolve, reject) => {
         oauth2Client.getAccessToken()
             .then((value) => {
@@ -16,12 +14,14 @@ const connectToGmail = (oauth2Client, OAUTH_EMAIL, GMAIL_CLIENT_ID, GMAIL_CLIENT
                     auth: {
                         type: 'OAuth2',
                         user: OAUTH_EMAIL,
-                        clientId: GMAIL_CLIENT_ID,
-                        clientSecret: GMAIL_CLIENT_SECRET,
-                        refreshToken: GMAIL_REFRESH_TOKEN,
+                        clientId: GOOGLE_CLIENT_ID,
+                        clientSecret: GOOGLEL_CLIENT_SECRET,
+                        refreshToken: GOOGLE_REFRESH_TOKEN,
                         accessToken: value.token
                     }
                 });
+                // console.log("Created transporter: --")
+                // console.log(transporter)
                 accessToken = value.token
                 resolve({accessToken:accessToken,transporter:transporter})
             })
@@ -70,7 +70,45 @@ const sendEmailToStudent = async (verifiedSenderEmail, transporter ,studentDetai
   });
 };
 
+const sendTestEmail = async  (verifiedSenderEmail, reciepient, transporter)=>{
+    // return new Promise((resolve, reject)=>{
+        const mailOptions = {
+            from: verifiedSenderEmail,
+            to: reciepient,
+            subject: 'Test Email: CSSL Slot Booking Confirmation',
+            text: `Hello, This is a test email.`,
+        };
+        
+        // send mail
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log(error);
+                return
+                // reject(error)
+                
+            }
+            console.log('Message sent: %s', info.messageId);
+            // resolve(info.messageId)
+            
+        });
+    // })
+    // const mailOptions = {
+    //     from: verifiedSenderEmail,
+    //     to: reciepient,
+    //     subject: 'Test Email: CSSL Slot Booking Confirmation',
+    //     text: `Hello, This is a test email.`,
+    // };
+    
+    // // send mail
+    // transporter.sendMail(mailOptions, (error, info) => {
+    //     if (error) {
+    //         return console.log(error);
+    //     }
+    //     console.log('Message sent: %s', info.messageId);
+    // });
+}
 
-module.exports = {sendEmailToTutor, sendEmailToStudent, connectToGmail}
+
+module.exports = {sendEmailToTutor, sendEmailToStudent, connectToGmail, sendTestEmail}
 
 
