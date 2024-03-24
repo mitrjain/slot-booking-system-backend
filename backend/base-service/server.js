@@ -1,20 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { google } = require('googleapis')
 const { Sequelize, DataTypes, Op } = require('sequelize');
 require('dotenv').config();
 var moment = require('moment-timezone');
-moment().tz("America/Los_Angeles").format();
 
-const { connectToSpreadSheet, addAppointment } = require('./sheet-utils')
 const { connectToDB } = require('./db');
 const { getAppointmentDate, days } = require('./utils');
 // const {routes, initiliazeRouter} = require('./routes');
 
-
-const port = 4000;
-const OAUTH_EMAIL = process.env.GMAIL_SENDER
+const port = 8080;
 
 const app = express();
 app.use(cors());
@@ -49,14 +44,13 @@ app.get('/api/dates', async (req, res) => {
 
 // API to get available slots
 app.get('/api/slots', async (req, res) => {
-  // console.log(process.env.GMAIL_REFRESH_TOKEN)
   try {
     const { day } = req.query;
 
     const validDays = ['M', 'T', 'Th'];
     let availableSlots
     const currentTime = moment().tz("America/Los_Angeles").format('HH:mm:ss');
-    // moment().format('hh:mm:ss');
+  
     if (!day || !validDays.includes(day)) {
       availableSlots = await Slot.findAll({ 
         where: { 
@@ -81,14 +75,10 @@ app.get('/api/slots', async (req, res) => {
       const presentDay = moment().tz("America/Los_Angeles").day();
       const queriedDay = days.get(day)
 
-      // console.log("presentDay:"+presentDay)
-      // console.log("queriedDay:"+queriedDay)
 
       let moment1 = moment(currentTime,'HH:mm::ss')
       let moment2 = moment('17:01:00','HH:mm::ss')
 
-      // console.log(moment1)
-      // console.log(moment2)
       if(presentDay == queriedDay && moment1.isBefore(moment2) ){
         availableSlots = await Slot.findAll({ 
           where: { 
@@ -182,6 +172,7 @@ app.post('/api/book', async (req, res) => {
 
     const appointmentDate =  getAppointmentDate(slot.day)
 
+    //convert these three to API Calls to the microservice
     addAppointment(sheet, selectedTutorDetails.name , studentDetails, slot, appointmentDate);
     sendEmailToTutor(OAUTH_EMAIL, transporter ,selectedTutorDetails, slot, appointmentDate);
     sendEmailToStudent(OAUTH_EMAIL, transporter, studentDetails, slot, appointmentDate)
