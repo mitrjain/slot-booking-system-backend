@@ -13,10 +13,6 @@ const connectToSpreadSheet = (sheetId, oauth2Client)=>{
                 resolve(doc)
             })
     })
-    //  doc.loadInfo();
-    // console.log("Connected to spreadsheet: "+doc.title);
-    // doc = doc.sheetsByIndex[0];
-    // return {doc}
 }
 
 
@@ -49,6 +45,7 @@ const addAppointment = async (doc, selectedTutor, studentDetails, slotDetails, a
         Day: slotDetails.day
     }
     const addedRow = await doc.addRow(row)
+    return addedRow
     // console.log(addedRow)
 }
 

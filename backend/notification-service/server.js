@@ -28,9 +28,7 @@ oauth2Client.setCredentials({
 });
 
 
-/*
-**Connect to Gmail
-*/
+
 var transporter
 const setupMailConfig = (data) => {
   transporter = data.transporter
@@ -42,6 +40,7 @@ const setupMailConfig = (data) => {
 
 const app = express();
 app.use(cors());
+app.use(bodyParser.json());
 
 app.post('/api/tutor', async (req, res) => {
     const { selectedTutorDetails, slot, appointmentDate} = req.body;
@@ -87,6 +86,10 @@ app.post('/api/test', async (req, res) => {
     }
   });
 
+/*
+**Connect to Gmail
+  On success - start server
+*/
 connectToGmail(oauth2Client, OAUTH_EMAIL, GOOGLE_CLIENT_ID, GOOGLEL_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN)
   .then(setupMailConfig)
   .then((transporter)=>{

@@ -14,56 +14,11 @@ const { getAppointmentDate, days } = require('./utils');
 
 
 const port = 4000;
-const SHEET_ID = process.env.SHEET_ID
 const OAUTH_EMAIL = process.env.GMAIL_SENDER
-const GMAIL_CLIENT_ID = process.env.GMAIL_CLIENT_ID
-const GMAIL_CLIENT_SECRET = process.env.GMAIL_CLIENT_SECRET
-const GMAIL_REFRESH_TOKEN = process.env.GMAIL_REFRESH_TOKEN
-const GMAIL_REDIRECT_URI = process.env.GMAIL_REDIRECT_URI
-
 
 const app = express();
 app.use(cors());
 
-/*
-**Set Oauth2 Client
-*/
-const OAuth2 = google.auth.OAuth2;
-const oauth2Client = new OAuth2(
-  GMAIL_CLIENT_ID,
-  GMAIL_CLIENT_SECRET,
-  GMAIL_REDIRECT_URI
-);
-
-// set refresh token
-oauth2Client.setCredentials({
-    refresh_token: GMAIL_REFRESH_TOKEN
-});
-
-
-/*
-**Connect to Gmail
-*/
-var accessToken =''
-var transporter
-const setupMailConfig = (data) => {
-  accessToken = data.accessToken
-  transporter = data.transporter
-}
-
-
-
-connectToGmail(oauth2Client, OAUTH_EMAIL, GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET, GMAIL_REFRESH_TOKEN)
-  .then(setupMailConfig)
-
-/*
-**Connect to Sheets
-*/
-var sheet
-connectToSpreadSheet(SHEET_ID, oauth2Client)
-  .then(value => {
-    sheet = value.doc
-  })
 
 /*
 **Connect to DB
