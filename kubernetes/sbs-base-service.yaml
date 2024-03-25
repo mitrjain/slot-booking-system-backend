@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: sbs-base-service
-        image: mitrjain1996/sbs-base-service:v1
+        image: mitrjain1996/sbs-base-service:latest
         ports:
         - containerPort: 8080
         env:
