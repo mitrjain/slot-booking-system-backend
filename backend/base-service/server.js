@@ -191,6 +191,12 @@ app.post('/api/book', async (req, res) => {
     {
       headers: headers
     })
+    .then(({data}) => {
+      console.log(data);
+    })
+    .catch((error)=>{
+      console.log(error)
+    })
 
     const sendEmailToTutorData = {
       selectedTutorDetails: selectedTutorDetails,
@@ -202,6 +208,12 @@ app.post('/api/book', async (req, res) => {
     {
       headers: headers
     })
+    .then(({data}) => {
+      console.log(data);
+    })
+    .catch((error)=>{
+      console.log(error)
+    })
 
     const sendEmailToStudentData = {
       studentDetails: studentDetails,
@@ -212,6 +224,12 @@ app.post('/api/book', async (req, res) => {
     sendEmailToStudentData,
     {
       headers: headers
+    })
+    .then(({data}) => {
+      console.log(data);
+    })
+    .catch((error)=>{
+      console.log(error)
     })
 
     res.json({ message: 'Slot booked successfully!', tutor: selectedTutor });
