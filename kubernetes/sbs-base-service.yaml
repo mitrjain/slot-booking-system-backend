@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: sbs-base-service
-        image: mitrjain1996/student-api-server:v3.0
+        image: mitrjain1996/sbs-base-service:v1
         ports:
         - containerPort: 8080
         env:
@@ -63,4 +63,4 @@ spec:
   - protocol: TCP
     port: 8080
     targetPort: 8080
-    nodePort: 32000
+    nodePort: 32002
