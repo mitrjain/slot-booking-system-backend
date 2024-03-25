@@ -4,7 +4,7 @@ variables:
   DOCKER_IMAGENAME_UPDATE_GSHEETS_SERVICE: "mitrjain1996/sbs-update-gsheets-service"
   DOCKER_IMAGENAME_DB_SERVICE: "mitrjain1996/sbs-db"
 
-  DOCKER_VERSION: "v1"
+  DOCKER_VERSION: "latest"
 
 stages:
   - build
