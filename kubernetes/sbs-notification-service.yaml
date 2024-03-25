@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sbs-notification-service-deployment
+  labels:
+    app: sbs-notification-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sbs-notification-service-pod
+  template:
+    metadata:
+      labels:
+        app: sbs-notification-service-pod
+    spec:
+      containers:
+      - name: sbs-notification-service
+        image: mitrjain1996/student-api-server:v3.0
+        ports:
+        - containerPort: 8080
+        env:
+          - name: GMAIL_SENDER
+            valueFrom:
+              configMapKeyRef:
+                name: sbs-config
+                key: gmail-sender
+          - name: GOOGLE_REDIRECT_URI
+            valueFrom:
+              secretKeyRef:
+                name: sbs-config
+                key: google-redirect-uri
+          - name: GOOGLE_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: sbs-secret
+                key: google-client
+          - name: GOOGLEL_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: sbs-secret
+                key: google-secret
+          - name: GOOGLE_REFRESH_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: sbs-secret
+                key: google-refresh-token      
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sbs-notification-service-service
+spec:
+  type: NodePort
+  selector:
+    app: sbs-notification-service-pod
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+    nodePort: 32000

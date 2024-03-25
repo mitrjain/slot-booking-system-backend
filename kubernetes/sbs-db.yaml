@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sbs-db-deployment
+  labels:
+    app: sbs-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sbs-db-pod
+  template:
+    metadata:
+      labels:
+        app: sbs-db-pod
+    spec:
+      containers:
+      - name: sbs-db
+        image: postgres:16.1
+        ports:
+        - containerPort: 5432
+        env:
+          - name: POSTGRES_DB
+            valueFrom:
+              configMapKeyRef:
+                name: sbs-config
+                key: db-name
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: sbs-secret
+                key: db-password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sbs-db-service
+spec:
+  selector:
+    app: sbs-db-pod
+  ports:
+  - protocol: TCP
+    port: 5432
+    targetPort: 5432
