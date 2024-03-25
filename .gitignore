@@ -2,5 +2,8 @@
 node_modules/
 
 env-sbs-db
-env-sbs-api-server
+env-sbs-notification-service
+env-sbs-update-gsheets-service
+env-sbs-base-service
+
 env-sbs-frontend

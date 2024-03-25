@@ -1,70 +1,22 @@
+const axios = require('axios');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { google } = require('googleapis')
 const { Sequelize, DataTypes, Op } = require('sequelize');
 require('dotenv').config();
 var moment = require('moment-timezone');
-moment().tz("America/Los_Angeles").format();
 
-const {sendEmailToTutor, sendEmailToStudent, connectToGmail } = require('./send-email-utils')
-const { connectToSpreadSheet, addAppointment } = require('./sheet-utils')
 const { connectToDB } = require('./db');
 const { getAppointmentDate, days } = require('./utils');
 // const {routes, initiliazeRouter} = require('./routes');
 
-
-const port = 4000;
-const SHEET_ID = process.env.SHEET_ID
-const OAUTH_EMAIL = process.env.GMAIL_SENDER
-const GMAIL_CLIENT_ID = process.env.GMAIL_CLIENT_ID
-const GMAIL_CLIENT_SECRET = process.env.GMAIL_CLIENT_SECRET
-const GMAIL_REFRESH_TOKEN = process.env.GMAIL_REFRESH_TOKEN
-const GMAIL_REDIRECT_URI = process.env.GMAIL_REDIRECT_URI
-
+const port = 8080;
+const NOTIFICATION_SERVICE_HOST = process.env.NOTIFICATION_SERVICE_HOST
+const UPDATE_SHEETS_SERVICE_HOST = process.env.UPDATE_SHEETS_SERVICE_HOST
 
 const app = express();
 app.use(cors());
 
-/*
-**Set Oauth2 Client
-*/
-const OAuth2 = google.auth.OAuth2;
-const oauth2Client = new OAuth2(
-  GMAIL_CLIENT_ID,
-  GMAIL_CLIENT_SECRET,
-  GMAIL_REDIRECT_URI
-);
-
-// set refresh token
-oauth2Client.setCredentials({
-    refresh_token: GMAIL_REFRESH_TOKEN
-});
-
-
-/*
-**Connect to Gmail
-*/
-var accessToken =''
-var transporter
-const setupMailConfig = (data) => {
-  accessToken = data.accessToken
-  transporter = data.transporter
-}
-
-
-
-connectToGmail(oauth2Client, OAUTH_EMAIL, GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET, GMAIL_REFRESH_TOKEN)
-  .then(setupMailConfig)
-
-/*
-**Connect to Sheets
-*/
-var sheet
-connectToSpreadSheet(SHEET_ID, oauth2Client)
-  .then(value => {
-    sheet = value.doc
-  })
 
 /*
 **Connect to DB
@@ -95,14 +47,13 @@ app.get('/api/dates', async (req, res) => {
 
 // API to get available slots
 app.get('/api/slots', async (req, res) => {
-  // console.log(process.env.GMAIL_REFRESH_TOKEN)
   try {
     const { day } = req.query;
 
     const validDays = ['M', 'T', 'Th'];
     let availableSlots
     const currentTime = moment().tz("America/Los_Angeles").format('HH:mm:ss');
-    // moment().format('hh:mm:ss');
+  
     if (!day || !validDays.includes(day)) {
       availableSlots = await Slot.findAll({ 
         where: { 
@@ -127,14 +78,10 @@ app.get('/api/slots', async (req, res) => {
       const presentDay = moment().tz("America/Los_Angeles").day();
       const queriedDay = days.get(day)
 
-      // console.log("presentDay:"+presentDay)
-      // console.log("queriedDay:"+queriedDay)
 
       let moment1 = moment(currentTime,'HH:mm::ss')
       let moment2 = moment('17:01:00','HH:mm::ss')
 
-      // console.log(moment1)
-      // console.log(moment2)
       if(presentDay == queriedDay && moment1.isBefore(moment2) ){
         availableSlots = await Slot.findAll({ 
           where: { 
@@ -228,9 +175,62 @@ app.post('/api/book', async (req, res) => {
 
     const appointmentDate =  getAppointmentDate(slot.day)
 
-    addAppointment(sheet, selectedTutorDetails.name , studentDetails, slot, appointmentDate);
-    sendEmailToTutor(OAUTH_EMAIL, transporter ,selectedTutorDetails, slot, appointmentDate);
-    sendEmailToStudent(OAUTH_EMAIL, transporter, studentDetails, slot, appointmentDate)
+    const headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json;charset=UTF-8',
+    };
+
+    const addAppointmentData = {
+      selectedTutorDetails: selectedTutorDetails,
+      studentDetails: studentDetails,
+      slot: slot,
+      appointmentDate: appointmentDate
+    }
+    axios.post(`${UPDATE_SHEETS_SERVICE_HOST}/api/record`,
+    addAppointmentData,
+    {
+      headers: headers
+    })
+    .then(({data}) => {
+      console.log(data);
+    })
+    .catch((error)=>{
+      console.log(error)
+    })
+
+    const sendEmailToTutorData = {
+      selectedTutorDetails: selectedTutorDetails,
+      slot: slot,
+      appointmentDate: appointmentDate
+    }
+    axios.post(`${NOTIFICATION_SERVICE_HOST}/api/tutor`,
+    sendEmailToTutorData,
+    {
+      headers: headers
+    })
+    .then(({data}) => {
+      console.log(data);
+    })
+    .catch((error)=>{
+      console.log(error)
+    })
+
+    const sendEmailToStudentData = {
+      studentDetails: studentDetails,
+      slot: slot,
+      appointmentDate: appointmentDate
+    }
+    axios.post(`${NOTIFICATION_SERVICE_HOST}/api/student`,
+    sendEmailToStudentData,
+    {
+      headers: headers
+    })
+    .then(({data}) => {
+      console.log(data);
+    })
+    .catch((error)=>{
+      console.log(error)
+    })
 
     res.json({ message: 'Slot booked successfully!', tutor: selectedTutor });
   } catch (error) {

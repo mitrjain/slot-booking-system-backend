@@ -5,4 +5,4 @@ FROM postgres:latest
 COPY initializeTables.sql /docker-entrypoint-initdb.d/
 
 # Expose PostgreSQL port
-# EXPOSE 5432
+EXPOSE 5432

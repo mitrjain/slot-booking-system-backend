@@ -1,29 +1,41 @@
-version: '1'
+version: '2'
 services:
   sbs-db:
     build:
       context: ../database
       dockerfile: ./Dockerfile
     env_file: ./env-sbs-db
-    ports:
-      - 5432:5432
-  
-  sbs-api-server:
+
+  sbs-notification-service:
     build:
-      context: ../backend
+      context: ../backend/notification-service
+      dockerfile: ./Dockerfile
+    env_file: ./env-sbs-notification-service
+
+  sbs-update-gsheets-service:
+    build:
+      context: ../backend/update-gsheets-service
+      dockerfile: ./Dockerfile
+    env_file: ./env-sbs-update-gsheets-service
+
+  sbs-base-service:
+    build:
+      context: ../backend/base-service
       dockerfile: ./Dockerfile
     depends_on:
       - sbs-db
-    env_file: ./env-sbs-api-server
+      - sbs-notification-service
+      - sbs-update-gsheets-service
+    env_file: ./env-sbs-base-service
     ports:
-      - 4000:4000
+      - 4000:8080
 
   sbs-frontend:
     build:
       context: ../../student-booking-system
       dockerfile: ./Dockerfile
     depends_on:
-      - sbs-api-server
+      - sbs-base-service
     env_file: ./env-sbs-frontend
     ports:
       - 8080:3000
