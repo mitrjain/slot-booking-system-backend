@@ -6,4 +6,7 @@ env-sbs-notification-service
 env-sbs-update-gsheets-service
 env-sbs-base-service
 
+sbs-config.yaml
+sbs-secret.yaml
+
 env-sbs-frontend
