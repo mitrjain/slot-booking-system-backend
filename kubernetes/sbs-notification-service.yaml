@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: sbs-notification-service
-        image: mitrjain1996/student-api-server:v3.0
+        image: mitrjain1996/sbs-notification-service:v1
         ports:
         - containerPort: 8080
         env:
@@ -27,7 +27,7 @@ spec:
                 key: gmail-sender
           - name: GOOGLE_REDIRECT_URI
             valueFrom:
-              secretKeyRef:
+              configMapKeyRef:
                 name: sbs-config
                 key: google-redirect-uri
           - name: GOOGLE_CLIENT_ID
@@ -58,4 +58,4 @@ spec:
   - protocol: TCP
     port: 8080
     targetPort: 8080
-    nodePort: 32000
+    nodePort: 32001

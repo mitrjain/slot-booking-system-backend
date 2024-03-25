@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: sbs-update-gsheets-service
-        image: mitrjain1996/student-api-server:v3.0
+        image: mitrjain1996/sbs-update-gsheets-service:v1
         ports:
         - containerPort: 8080
         env:
@@ -27,7 +27,7 @@ spec:
                 key: google-redirect-uri
           - name: SHEET_ID
             valueFrom:
-              configMapKeyRef:
+              secretKeyRef:
                 name: sbs-secret
                 key: sheet-id
           - name: GOOGLE_CLIENT_ID
