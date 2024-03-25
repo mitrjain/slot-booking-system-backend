@@ -15,7 +15,7 @@ RUN npm ci
 COPY *.js .
 
 # Expose the port that the app will run on
-EXPOSE 4000
+EXPOSE 8080
 
 # Start the app
 CMD ["npm", "start"]
