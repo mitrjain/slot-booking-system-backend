@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sbs-base-service-deployment
+  labels:
+    app: sbs-base-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sbs-base-service-pod
+  template:
+    metadata:
+      labels:
+        app: sbs-base-service-pod
+    spec:
+      containers:
+      - name: sbs-base-service
+        image: mitrjain1996/student-api-server:v3.0
+        ports:
+        - containerPort: 8080
+        env:
+          - name: POSTGRES_DB_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: sbs-config
+                key: db-host
+          - name: ENVIRONMENT
+            valueFrom:
+              configMapKeyRef:
+                name: sbs-config
+                key: environment
+          - name: NOTIFICATION_SERVICE_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: sbs-config
+                key: notification-service-host
+          - name: UPDATE_SHEETS_SERVICE_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: sbs-config
+                key: update-gsheets-service-host
+          - name: POSTGRES_DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: sbs-secret
+                key: db-user
+          - name: POSTGRES_DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: sbs-secret
+                key: db-password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sbs-base-service-service
+spec:
+  type: NodePort
+  selector:
+    app: sbs-base-service-pod
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+    nodePort: 32000
