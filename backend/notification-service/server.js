@@ -47,12 +47,12 @@ app.post('/api/tutor', async (req, res) => {
   
     try {
       if(!selectedTutorDetails || !slot || !appointmentDate){
-        return res.status(422).json({ message: 'One or JSON request parameters is missing' });
+        return res.status(422).json({ message: 'One or more JSON request parameters is missing' });
       }
       
       await sendEmailToTutor(OAUTH_EMAIL, transporter ,selectedTutorDetails, slot, appointmentDate);
   
-      res.json({ message: 'Email sent sucessfully', tutor: selectedTutor });
+      res.json({ message: 'Email sent sucessfully', tutor: selectedTutorDetails });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Internal Server Error' });
@@ -63,7 +63,7 @@ app.post('/api/student', async (req, res) => {
     const { studentDetails, slot, appointmentDate} = req.body;
     try {
       if(!studentDetails || !slot || !appointmentDate){
-        return res.status(422).json({ message: 'One or JSON request parameters is missing' });
+        return res.status(422).json({ message: 'One or more JSON request parameters is missing' });
       }
 
       await sendEmailToStudent(OAUTH_EMAIL, transporter, studentDetails, slot, appointmentDate)

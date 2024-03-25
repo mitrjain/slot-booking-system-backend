@@ -17,6 +17,8 @@ services:
       context: ../backend/update-gsheets-service
       dockerfile: ./Dockerfile
     env_file: ./env-sbs-update-gsheets-service
+    ports:
+      - 8081:8080
 
   sbs-base-service:
     build:

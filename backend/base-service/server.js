@@ -175,6 +175,11 @@ app.post('/api/book', async (req, res) => {
 
     const appointmentDate =  getAppointmentDate(slot.day)
 
+    const headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json;charset=UTF-8',
+    };
+
     const addAppointmentData = {
       selectedTutorDetails: selectedTutorDetails,
       studentDetails: studentDetails,
@@ -184,12 +189,8 @@ app.post('/api/book', async (req, res) => {
     axios.post(`${UPDATE_SHEETS_SERVICE_HOST}/api/record`,
     addAppointmentData,
     {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json;charset=UTF-8",
-      }
+      headers: headers
     })
-    // addAppointment(sheet, selectedTutorDetails.name , studentDetails, slot, appointmentDate);
 
     const sendEmailToTutorData = {
       selectedTutorDetails: selectedTutorDetails,
@@ -199,12 +200,8 @@ app.post('/api/book', async (req, res) => {
     axios.post(`${NOTIFICATION_SERVICE_HOST}/api/tutor`,
     sendEmailToTutorData,
     {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json;charset=UTF-8",
-      }
+      headers: headers
     })
-    // sendEmailToTutor(OAUTH_EMAIL, transporter ,selectedTutorDetails, slot, appointmentDate);
 
     const sendEmailToStudentData = {
       studentDetails: studentDetails,
@@ -214,12 +211,8 @@ app.post('/api/book', async (req, res) => {
     axios.post(`${NOTIFICATION_SERVICE_HOST}/api/student`,
     sendEmailToStudentData,
     {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json;charset=UTF-8",
-      }
+      headers: headers
     })
-    // sendEmailToStudent(OAUTH_EMAIL, transporter, studentDetails, slot, appointmentDate)
 
     res.json({ message: 'Slot booked successfully!', tutor: selectedTutor });
   } catch (error) {

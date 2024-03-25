@@ -40,7 +40,7 @@ app.post('/api/record', async (req, res) => {
       
       let addedRow = await addAppointment(sheet, selectedTutorDetails.name , studentDetails, slot, appointmentDate);
   
-      res.json({ message: 'Record added', record: addedRow });
+      res.json({ message: 'Record added' });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Internal Server Error' });

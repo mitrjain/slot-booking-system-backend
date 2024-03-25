@@ -1,6 +1,6 @@
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 
-var moment = require('moment'); // require
+var moment = require('moment-timezone');
 
 const connectToSpreadSheet = (sheetId, oauth2Client)=>{
     //set up shreadsheet client
