@@ -1,0 +1,29 @@
+variables:
+  DOCKER_IMAGENAME_BASE_SERVICE: "mitrjain1996/sbs-base-service"
+  DOCKER_IMAGENAME_NOTIFICATION_SERVICE: "mitrjain1996/sbs-notification-service"
+  DOCKER_IMAGENAME_UPDATE_GSHEETS_SERVICE: "mitrjain1996/sbs-update-gsheets-service"
+  DOCKER_VERSION: "v1"
+
+stages:
+  - build
+
+build_image:
+  stage: build
+  image: docker:24.0.7-cli
+  services:
+   - docker:24.0.7-dind
+  variables:
+   DOCKER_TLS_CERTDIR: "/certs"
+  before_script:
+   - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+  script:
+   - cd ./backend/base-service/
+   - docker build -t $DOCKER_IMAGENAME_BASE_SERVICE:$DOCKER_VERSION .
+   - cd ../backend/notification-service/
+   - docker build -t $DOCKER_IMAGENAME_NOTIFICATION_SERVICE:$DOCKER_VERSION .
+   - cd ../backend/update-gsheets-service/
+   - docker build -t $DOCKER_IMAGENAME_UPDATE_GSHEETS_SERVICE:$DOCKER_VERSION .
+
+   - docker push $DOCKER_IMAGENAME_BASE_SERVICE:$DOCKER_VERSION
+   - docker push $DOCKER_IMAGENAME_NOTIFICATION_SERVICE:$DOCKER_VERSION
+   - docker push $DOCKER_IMAGENAME_UPDATE_GSHEETS_SERVICE:$DOCKER_VERSION
