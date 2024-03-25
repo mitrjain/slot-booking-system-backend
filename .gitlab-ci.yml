@@ -2,6 +2,8 @@ variables:
   DOCKER_IMAGENAME_BASE_SERVICE: "mitrjain1996/sbs-base-service"
   DOCKER_IMAGENAME_NOTIFICATION_SERVICE: "mitrjain1996/sbs-notification-service"
   DOCKER_IMAGENAME_UPDATE_GSHEETS_SERVICE: "mitrjain1996/sbs-update-gsheets-service"
+  DOCKER_IMAGENAME_DB_SERVICE: "mitrjain1996/sbs-db"
+
   DOCKER_VERSION: "v1"
 
 stages:
@@ -20,7 +22,9 @@ build_image:
    - docker build -t $DOCKER_IMAGENAME_BASE_SERVICE:$DOCKER_VERSION ./backend/base-service/
    - docker build -t $DOCKER_IMAGENAME_NOTIFICATION_SERVICE:$DOCKER_VERSION ./backend/notification-service/
    - docker build -t $DOCKER_IMAGENAME_UPDATE_GSHEETS_SERVICE:$DOCKER_VERSION ./backend/update-gsheets-service/
+   - docker build -t $DOCKER_IMAGENAME_DB_SERVICE:$DOCKER_VERSION ./database/
 
    - docker push $DOCKER_IMAGENAME_BASE_SERVICE:$DOCKER_VERSION
    - docker push $DOCKER_IMAGENAME_NOTIFICATION_SERVICE:$DOCKER_VERSION
    - docker push $DOCKER_IMAGENAME_UPDATE_GSHEETS_SERVICE:$DOCKER_VERSION
+   - docker push $DOCKER_IMAGENAME_DB_SERVICE:$DOCKER_VERSION
