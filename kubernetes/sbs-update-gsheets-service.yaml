@@ -51,11 +51,9 @@ kind: Service
 metadata:
   name: sbs-update-gsheets-service-service
 spec:
-  type: NodePort
   selector:
     app: sbs-update-gsheets-service-pod
   ports:
   - protocol: TCP
     port: 8080
     targetPort: 8080
-    nodePort: 32000
