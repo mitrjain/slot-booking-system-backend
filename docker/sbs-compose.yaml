@@ -1,9 +1,7 @@
 version: '2'
 services:
   sbs-db:
-    build:
-      context: ../database
-      dockerfile: ./Dockerfile
+    image: mitrjain1996/sbs-db:latest
     env_file: ./env-sbs-db
 
   sbs-notification-service:
