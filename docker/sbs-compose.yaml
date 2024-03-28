@@ -7,21 +7,15 @@ services:
     env_file: ./env-sbs-db
 
   sbs-notification-service:
-    build:
-      context: ../backend/notification-service
-      dockerfile: ./Dockerfile
+    image: mitrjain1996/sbs-notification-service:latest
     env_file: ./env-sbs-notification-service
 
   sbs-update-gsheets-service:
-    build:
-      context: ../backend/update-gsheets-service
-      dockerfile: ./Dockerfile
+    image: mitrjain1996/sbs-update-gsheets-service:latest
     env_file: ./env-sbs-update-gsheets-service
 
   sbs-base-service:
-    build:
-      context: ../backend/base-service
-      dockerfile: ./Dockerfile
+    image: mitrjain1996/sbs-base-service:latest
     depends_on:
       - sbs-db
       - sbs-notification-service
