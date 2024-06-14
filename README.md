@@ -68,9 +68,10 @@ student-tutor-booking-system/
 
 ###  On a Kubernetes cluster
 1. **Set up a kubernetes cluster on the cloud (EKS, GCP) or on your local machne (using minikube)**
+
 2. **Configure the kubectl cli utility to interact with the cluster set up in the previous step**
 
-3.**Clone the repository:**
+3. **Clone the repository:**
     ```bash
     git clone https://github.com/mitrjain/slot-booking-system-backend.git
     cd slot-booking-system-backend/kubernetes/
