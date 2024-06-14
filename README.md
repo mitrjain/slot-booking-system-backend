@@ -54,7 +54,7 @@ student-tutor-booking-system/
     ```
 
 2. **Ensure you have the necessary environment files:**
-   - Using the env-service_name-sample files create the following environment files in the docker dir: 
+   - Using the env-service_name-sample files to create the following environment files in the docker dir: 
      - `env-sbs-db`
      - `env-sbs-notification-service`
      - `env-sbs-update-gsheets-service`
@@ -68,7 +68,7 @@ student-tutor-booking-system/
 
 ###  On a Kubernetes cluster
 1. **Set up a kubernetes cluster on the cloud (EKS, GCP) or on your local machne (using minikube)**
-2. **Configure the kubeconfig cli utility to interact with the cluster set up in the previous step**
+2. **Configure the kubectl cli utility to interact with the cluster set up in the previous step**
 
 3.**Clone the repository:**
     ```bash
