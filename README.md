@@ -1,4 +1,15 @@
 # Student Tutor Appointment Booking System
+Welcome to the Student Tutor Appointment Booking System! 
+
+This project provides a seamless way to book appointments with tutors. This system is built with a containerized microservices-based REST API backend.
+
+Below are the key functionalities of this system:
+- View available slots
+- Book slots
+- Auto email notifications to the tutor and student when an appoitnment is booked
+- Update Google sheets to maintain a history of the appointment records
+- Auto reset appointments to add fresh appointment slots for the upcoming week
+- Federated (Google) login to allow access only to the users of a particular organization
 
 ## Overall prerequisites
 Before running this project, ensure you have the following installed:
@@ -58,6 +69,7 @@ student-tutor-booking-system/
 ###  On a Kubernetes cluster
 1. **Set up a kubernetes cluster on the cloud (EKS, GCP) or on your local machne (using minikube)**
 2. **Configure the kubeconfig cli utility to interact with the cluster set up in the previous step**
+
 3.**Clone the repository:**
     ```bash
     git clone https://github.com/mitrjain/slot-booking-system-backend.git
