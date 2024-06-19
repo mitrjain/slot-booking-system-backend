@@ -89,4 +89,5 @@ student-tutor-booking-system/
 - sbs-db-service: [https://github.com/mitrjain/sbs-db-service](https://github.com/mitrjain/sbs-db-service)
 - sbs-gsheets-service: [https://github.com/mitrjain/sbs-gsheets-service](https://github.com/mitrjain/sbs-gsheets-service)
 - sbs-notification-service: [https://github.com/mitrjain/sbs-notification-service](https://github.com/mitrjain/sbs-notification-service)
+- sbs-base-service: [https://github.com/mitrjain/sbs-base-service](https://github.com/mitrjain/sbs-base-service)
 - micro-frontend: [https://github.com/adil-ansari/student-booking-system](https://github.com/adil-ansari/student-booking-system)
